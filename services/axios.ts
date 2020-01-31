@@ -1,15 +1,86 @@
 import axios from 'axios'
-// import config from "../config";
+import storage from './asyncStorage'
+import Constants from "expo-constants";
 
 
-// const access_token = typeof context.packages.user.token !== 'undefined' ? context.packages.user.token.access_token : false,
-//   self_token = context.packages.self_token
+
+
+const access_token = '',
+  self_token = Constants.deviceId
+
 
 var axiosInstance = axios.create({
-  baseURL: 'https://rflbestbuy.com/secure/',
+  baseURL: 'http://103.106.237.112:8080/samnuxt/secure/'
 });
+axiosInstance.defaults.headers.common["Content-Type"] = "application/json";
 
-// axiosInstance.defaults.headers.common['Authorization'] = "Bearer " + access_token;
-// axiosInstance.defaults.headers.common['Content-Type'] = "application/json";
-//axiosInstance.defaults.params['self_token'] = self_token
-export default axiosInstance
+
+
+class axioInstance {
+
+  private axios
+  private self_token
+  private params
+  private method
+
+  constructor(axios, self_token) {
+    this.axios = axios
+    this.self_token = self_token
+  }
+
+  async get(uri, info) {
+    this.params = info
+    this.method = 'get'
+    const params = this.mergeParams()
+
+    const token = await storage.get('token')
+    this.axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+    console.log(uri,params)
+
+    return await this.axios.get(uri, params)
+  }
+
+  async post(uri, info) {
+    this.params = info
+    this.method = 'get'
+    const params = this.mergeParams()
+    
+    const token = await storage.get("token");
+    this.axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+    console.log(params)
+
+    return await this.axios.post(uri, params);
+  }
+
+  mergeParams() {
+    let params
+    if (this.method == 'get') {
+
+      const exitingParams = this.params && this.params.params ? this.params.params : {}
+
+      params = {
+        params: {
+          ...exitingParams,
+          ...{
+            self_token: this.self_token
+          }
+        }
+      }
+    } else if (this.method == 'post') {
+       params = {
+        ...this.params,
+        ...{
+          self_token: this.self_token
+        }
+      }
+    }
+    return params
+  }
+
+
+}
+
+
+export default new axioInstance(axiosInstance, self_token);

@@ -1,16 +1,32 @@
 import { inject,observer } from 'mobx-react'
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import ProductDesign from '../components/helpers/ProductDesign'
 
 const CategoryProductScreen = (props) => {
 
     const { shop } = props.store,
-        category = props.navigation.getParam('category')
+        category = props.navigation.getParam('category'),
+        [getLoading,setLoading] = useState(false)
     
     useEffect(() => {
-        shop.fetchSearchProducts({ slug: category.seo_url })
-    })
+
+        const loadingProduct = async (shop, category) => {
+            setLoading(true)
+            await shop.fetchSearchProducts({ slug: category.seo_url });
+            setLoading(false)
+        }
+
+        loadingProduct(shop,category)
+
+    }, [shop, category])
+    
+
+    if (getLoading) {
+        return (<View>
+            <Text>Loading...</Text>
+        </View>)
+    }
     
     const products = shop.SEARCH_PRODUCTS?shop.SEARCH_PRODUCTS.products.data:[]
 

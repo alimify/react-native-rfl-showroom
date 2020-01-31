@@ -43,7 +43,14 @@ const Review = props => {
 
 
 const Reviews = props => {
-    const { shop } = props.store
+    const { shop } = props.store,
+        product = props.product.product
+    
+    if (!product) {
+        return <View></View>
+    }
+    
+    
     
 
     const likeDislike =  async (review_id, col = 'like') =>  {
@@ -53,23 +60,27 @@ const Reviews = props => {
         })
 
         await shop.fetchProductReviewsById({
-            product_id: 2598
+            product_id: product.id
         })
     },
-        calculatedReview = Array.isArray(props.product.rating_sum) && props.product.rating_sum.length > 0 ? Math.round(props.product.rating_sum[0].rating * 10) / 10 : 0
+        calculatedReview = Array.isArray(product.rating_sum) && product.rating_sum.length > 0 ? Math.round(product.rating_sum[0].rating * 10) / 10 : 0
+    
 
 
     useEffect(() => {
+
         shop.fetchProductReviewsById({
-            product_id: 2598
+            product_id: product.id
         })
-    })
+    }, [product])
+
+
 
     const reviews = shop.PRODUCT_REVIEWS_BY_ID ? shop.PRODUCT_REVIEWS_BY_ID.reviews : []
     
 
     const ReviewsView = reviews.length > 0 ? (<View>
-        {reviews.map((item) => <Review likeDislike={likeDislike} review={item}/>)}
+        {reviews.map((item) => <Review key={item.id.toString()} likeDislike={likeDislike} review={item}/>)}
     </View>) : (<Text>
             No reviews found..
     </Text>);
@@ -78,7 +89,7 @@ const Reviews = props => {
         <View style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.recentTitle}>Recent Reviews ({reviews.length})</Text>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Reviews',{product: props.product.id})}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('Reviews', { product: product})}>
                     <Text style={styles.reviewText}>All Reviews ></Text>
                 </TouchableOpacity>
             </View>

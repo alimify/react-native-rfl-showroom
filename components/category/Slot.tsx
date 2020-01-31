@@ -11,7 +11,7 @@ const Slot = props => {
           <Text style={styles.title}>{props.category.name}</Text>
         </View>
         <View style={styles.slotItemsContainer}>
-            {props.category.sub_categories.map((category) => <SlotItem category={category}/>)}
+            {props.category.sub_categories.map((category) => <SlotItem key={category.id.toString()} category={category}/>)}
         </View>
       </View>
     );

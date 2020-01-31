@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View} from "react-native";
 import { withNavigation } from 'react-navigation'
 import { inject, observer } from "mobx-react";
 import Product from '../../components/helpers/SimilarProductDesign'
@@ -18,7 +18,7 @@ const SimilarProduct = props => {
         <View>
             <Text style={styles.title}>Similar Product</Text>
             <View style={styles.productsContainer}>
-                {products.map((item) => <Product product={item} />)}
+                {products.map((item) => <Product key={item.id.toString()} product={item} />)}
             </View>
         </View>
     );

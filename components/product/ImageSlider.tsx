@@ -2,11 +2,7 @@ import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
 import {
   StyleSheet,
-  Text,
   View,
-  ScrollView,
-  Image,
-  Button
 } from "react-native";
 
 const Sliders = props => {

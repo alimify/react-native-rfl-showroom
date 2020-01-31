@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Image } from "react-native";
+import { StyleSheet, Text, View} from "react-native";
 
 import ProductDesign from "../helpers/ProductDesign";
 import { FlatList } from "react-native-gesture-handler";
@@ -13,22 +13,23 @@ const Recommended = props => {
 
 
     return (
-        <View style={styles.container}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.title}>{props.title}</Text>
-                <Text style={styles.moreText}>More > </Text>
-            </View>
-            <View>
-                <FlatList
-                    data={props.products.slice(0,8)}
-                    keyExtractor={(item, index) => index.toString()}
-                    numColumns={2}
-                    renderItem={({item}) => <ProductDesign product={item} />}
-                    columnWrapperStyle={DefaultStyles.flatListRow}
-                />
-            </View>
-
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{props.title}</Text>
+          <Text style={styles.moreText}>More > </Text>
         </View>
+        <View>
+          <FlatList
+            data={props.products.slice(0, 8)}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={2}
+            renderItem={({ item }) => (
+              <ProductDesign product={item} />
+            )}
+            columnWrapperStyle={DefaultStyles.flatListRow}
+            />
+        </View>
+      </View>
     );
 };
 

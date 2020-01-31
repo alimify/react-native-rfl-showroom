@@ -1,9 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView,SectionList, Image } from "react-native";
+import { StyleSheet, Text, View, ScrollView,SectionList, Image,TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Colors from '../../constants/Colors'
-
-
+import {withNavigation} from 'react-navigation'
 
 
 const PriceText = props => {
@@ -26,7 +25,12 @@ const PriceText = props => {
 const NewArrivalItem = props => {
   
 
-    return (
+  return (
+    <TouchableOpacity onPress={() => {
+      props.navigation.navigate('Product', {
+        product: props.product.product
+      })
+    }}>
       <View style={styles.itemContainer}>
         <Image
           style={styles.itemImage}
@@ -41,7 +45,8 @@ const NewArrivalItem = props => {
         </Text>
         <PriceText product={props.product.product} />
       </View>
-    );
+    </TouchableOpacity>
+  );
 }
 
 
@@ -60,15 +65,13 @@ const NewArrivals = props => {
         <Text style={styles.titleText}>New Arrivals</Text>
         <Text style={styles.titleMore}>More ></Text>
       </View>
-      <ScrollView horizontal>
         <FlatList
                   data={products}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <NewArrivalItem product={item} />}
+                  renderItem={({item}) => <NewArrivalItem navigation={props.navigation} product={item} />}
                   style={{ flexWrap: 'wrap', flexDirection: 'row' }}
-                  numColumns={8}
-        />
-      </ScrollView>
+                  horizontal={true}
+                  />
     </View>
   );
 };
@@ -118,4 +121,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default NewArrivals;
+export default withNavigation(NewArrivals);

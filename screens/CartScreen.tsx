@@ -8,20 +8,56 @@ import {
   Button
 } from "react-native";
 
-const HomeScreen = props => {
+
+
+
+const CartItem = props => {
   return (
     <View>
-      <Text>Hello World</Text>
-      <Button
-        title="Go Category"
-        onPress={() => {
-          props.navigation.navigate("Category");
-        }}
-      />
+      <View></View>
+      <View>
+        <Text>Product Title - Name</Text>
+        <View>
+          <View>
+            <Text>Price</Text>
+          </View>
+          <View>
+            <Text>-</Text>
+            <Text>9</Text>
+            <Text>+</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+
+
+
+
+
+
+
+const CartScreen = props => {
+
+
+  
+  return (
+    <View>
+
+      <CartItem />
+      <CartItem />
+      <CartItem />
+      <CartItem />
+      <CartItem />
+      <CartItem />
+      <CartItem />
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({});
 
-export default HomeScreen;
+export default CartScreen;

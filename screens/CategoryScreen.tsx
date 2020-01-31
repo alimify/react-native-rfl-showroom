@@ -11,7 +11,7 @@ const CategoryScreen = props => {
   const { common } = props.store;
 
   useEffect(() => {
-    common.fetchGlobals()
+    // common.fetchGlobals()
   })
       
       const megaMenus = common.GLOBALS ? common.GLOBALS.megamenus : [];
@@ -20,14 +20,14 @@ const CategoryScreen = props => {
       <View style={styles.container}>
         <ScrollView style={styles.sideBarContainer}>
           {megaMenus.map(item => (
-            <SiderBarItem category={item} />
+            <SiderBarItem key={item.id.toString()} category={item} />
           ))}
         </ScrollView>
 
         <ScrollView>
           {/* Sub Category Slot */}
           {megaMenus.map(item => (
-            <Slot category={item} />
+            <Slot key={item.id.toString()} category={item} />
           ))}
         </ScrollView>
       </View>

@@ -7,7 +7,7 @@ class Common {
   GLOBALS = false;
   SHOP_TYPE = false
   GET_SHOWROOM_BY_THANA = false
-  DIVISIONS = false
+  DIVISIONS = []
   DISTRICTS_BY_DIVISIONS = []
   THANA_BY_DISTRICT = []
   PAGE_BY_ID = false

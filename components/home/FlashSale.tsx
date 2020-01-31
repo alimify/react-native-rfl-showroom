@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import { StyleSheet, Text, View, Image, FlatList, SafeAreaView } from "react-native";
 import DefaultStyles from '../../constants/DefaultStyles'
 import Colors from "../../constants/Colors";
 
@@ -50,13 +50,13 @@ const HomeFlashSale = props => {
       
         </View>
       </View>
-      <View>
+      <View style={styles.itemsContainer}>
+
         <FlatList
           data={flashItems}
           numColumns={2}
           keyExtractor={(item, index) => index.toString()}
           renderItem={() => <FlashItem />}
-          style={styles.itemsContainer}
         />
       </View>
     </View>

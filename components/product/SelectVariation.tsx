@@ -1,33 +1,49 @@
-import React,{useState} from "react";
-import { StyleSheet, Text, View, ScrollView, Image,TouchableOpacity } from "react-native";
+import React, { useState,useEffect } from "react";
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, Button } from "react-native";
 import { AntDesign } from '@expo/vector-icons'
 import Modal from 'react-native-modal'
 import { set } from "mobx";
-
+import { withNavigation } from "react-navigation";
+import { inject, observer } from "mobx-react";
 
 const PriceText = props => {
   return !(
     props.product.actual_discount > 0 && props.product.product_price_now > 0
   ) ? (
-    <View style={{}}>
-      <Text style={styles.priceNow}>$ {props.product.product_price_now}</Text>
-    </View>
-  ) : (
-    <View style={{}}>
-      <Text style={styles.priceNow}>$ {props.product.product_price_now}</Text>
-      <Text style={styles.regularPrice}>
-        $ {props.product.local_selling_price}
-      </Text>
-    </View>
-  );
+      <View style={{}}>
+        <Text style={styles.priceNow}>$ {props.product.product_price_now}</Text>
+      </View>
+    ) : (
+      <View style={{}}>
+        <Text style={styles.priceNow}>$ {props.product.product_price_now}</Text>
+        <Text style={styles.regularPrice}>
+          $ {props.product.local_selling_price}
+        </Text>
+      </View>
+    );
 };
 
 
 const VariationModal = (props) => {
 
-
-  const [getQuantity,setQuantity] = useState(1)
+  const colors = props.product.colors,
+    sizeExist = props.product.colors.length > 0 && props.product.colors[props.getColorKey],
+    sizes = sizeExist ? props.product.colors[props.getColorKey].sizes : []
   
+  
+  useEffect(() => {
+    if (colors.length > 0 && colors[props.getColorKey]) {
+      props.setColorId(colors[props.getColorKey].id)
+    }
+
+    if (sizeExist && sizes[props.getSizeKey]) {
+      props.setSizeId(sizes[props.getSizeKey].id)
+    }
+
+  },[props,sizes,colors,sizeExist])
+
+
+
   return (
     <Modal
       isVisible={props.show}
@@ -56,11 +72,55 @@ const VariationModal = (props) => {
         <View>
           <PriceText product={props.product} />
           <View>
-            <Text>{props.product.stock_status == 1 ? 'In stock':'Out of stock'}</Text>
+            <Text>
+              {props.product.stock_status == 1 ? "In stock" : "Out of stock"}
+            </Text>
           </View>
         </View>
         <View>
-          <Text>Color & Size</Text>
+          <Text>{colors.length > 0 ? 'Colors' : ''}</Text>
+            <View style={styles.variationItemsContainer}>
+              {colors.map((item, key) => {
+                return (
+                  <TouchableOpacity key={item.id.toString()} onPress={() => {
+                    props.setColorId(item.id)
+                    props.setColorKey(key)
+                  }}>
+                    <View style={{padding: 5}}>
+                    <Image
+                      source={{ uri: "https://rflbestbuy.com/secure/public/pmp_img/" + item.color_codes }}
+                      style={{ height: 50, width: 50, borderWidth: 2,borderColor: key === props.getColorKey ? 'green' : '#ddd' }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+
+                )
+              })}
+              </View>
+
+          <Text>{sizes.length > 0 ? 'Sizes' : ''}</Text>
+
+
+          <View style={styles.variationItemsContainer}>
+            {sizes.map((item, key) => {
+              return (
+                <TouchableOpacity key={key.toString()} onPress={() => {
+                  props.setSizeId(item.id)
+                  props.setSizeKey(key)
+                }}>
+
+                  <Image
+                    source={{ uri: "https://rflbestbuy.com/secure/public/pmp_img/" + item.color_codes }}
+                    style={{ height: 50, width: 50, borderWidth: 1,paddingHorizontal: 5, borderColor: key === props.getSizeKey ? 'green' : '#ddd' }}
+                  />
+                </TouchableOpacity>
+
+              )
+            })}
+
+          </View>
+
+
         </View>
         <View>
           <View>
@@ -69,24 +129,27 @@ const VariationModal = (props) => {
           <View>
             <TouchableOpacity
               onPress={() => {
-                const quantity = getQuantity - 1;
-                setQuantity(quantity);
+                const quantity = props.getQuantity - 1;
+                props.setQuantity(quantity);
               }}
             >
               <Text>-</Text>
             </TouchableOpacity>
-            <Text>{getQuantity}</Text>
+            <Text>{props.getQuantity}</Text>
 
             <TouchableOpacity
               onPress={() => {
-                const quantity = getQuantity + 1
-                setQuantity(quantity);
+                const quantity = props.getQuantity + 1;
+                props.setQuantity(quantity);
               }}
             >
               <Text>+</Text>
             </TouchableOpacity>
-
           </View>
+        </View>
+        <View>
+          <Button title="ADD TO CART" onPress={() => { props.addToCart(props.product.id) }} />
+          <Button title="Buy" onPress={() => { }} />
         </View>
       </View>
     </Modal>
@@ -95,7 +158,44 @@ const VariationModal = (props) => {
 
 const SelectVariation = props => {
 
-  const [getModalShow, setModalShow] = useState(false)
+  const [getModalShow, setModalShow] = useState(false),
+    [getLoading, setLoading] = useState(false),
+    { shop } = props.store
+
+  const [getQuantity, setQuantity] = useState(1),
+    [getColorKey, setColorKey] = useState(0),
+    [getColorId, setColorId] = useState(),
+    [getSizeId, setSizeId] = useState(),
+    [getSizeKey, setSizeKey] = useState(0),
+    [getTypeId, setTypeId] = useState();
+
+  const addToCart = async (id) => {
+
+    setLoading(true)
+    await shop.fetchAddToCart({
+      // self_token: this.$store.state.user.SELF_TOKEN,
+      main_pid: id,
+      qty: getQuantity,
+      color: getColorId,
+      size: getSizeId,
+      type: getTypeId
+    })
+    setLoading(false)
+
+    // console.log(shop.ADD_TO_CART)
+
+    await shop.fetchCart({})
+
+
+  };
+
+
+
+
+
+  if (!props.product) {
+    return <View></View>
+  }
 
   return (
     <View>
@@ -114,7 +214,22 @@ const SelectVariation = props => {
         </View>
       </TouchableOpacity>
       <View>
-        <VariationModal show={getModalShow} setModalShow={setModalShow} product={props.product.product} />
+        <VariationModal
+          show={getModalShow}
+          setModalShow={setModalShow}
+          product={props.product.product}
+          setQuantity={setQuantity}
+          getQuantity={getQuantity}
+          getColorKey={getColorKey}
+          setColorKey={setColorKey}
+          setColorId={setColorId}
+          getColorId={getColorId}
+          setSizeId={setSizeId}
+          getSizeKey={getSizeKey}
+          setSizeKey={setSizeKey}
+          setTypeId={setTypeId}
+          addToCart={addToCart}
+        />
       </View>
     </View>
   );
@@ -142,7 +257,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     margin: 0,
     backgroundColor: "white",
-    height: 250,
+    height: 400,
     flex: 0,
     bottom: 0,
     position: "absolute",
@@ -169,7 +284,13 @@ const styles = StyleSheet.create({
     color: "gray",
     padding: 2,
     textDecorationLine: "line-through"
+  },
+
+  variationItemsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   }
+
 });
 
-export default SelectVariation;
+export default inject("store")(observer(withNavigation(SelectVariation)));

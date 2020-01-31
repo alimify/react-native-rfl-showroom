@@ -1,8 +1,10 @@
 import { decorate, action, observable } from "mobx";
 import axios from "../services/axios";
+import Constants from "expo-constants";
 
 class User {
   ///STATES
+  LOGIN = false;
   ACCOUNT = false;
   REGISTER = false;
   UPDATE_ACCOUNT = false;
@@ -10,19 +12,32 @@ class User {
   UPDATE_BILLING_ADDRESS = false;
   ORDERS_HISTORY = false;
   SELF_DASHBOARD = false;
-  SELF_TOKEN = "";
+  SELF_TOKEN = Constants.deviceId;
+  ACCESS_TOKEN = false;
   PASSWORD_RESET_REQUEST = false;
   PASSWORD_RESET = false;
 
   //SETTERS
+  setLogin(data) {
+    this.LOGIN = data;
+    return this.LOGIN;
+  }
+
   setAccount(data) {
-    return (this.ACCOUNT = data);
+    this.ACCOUNT = data;
+    return true;
+  }
+
+  setAccessToken(token) {
+    this.ACCESS_TOKEN = token;
+    return this.ACCESS_TOKEN;
   }
 
   setRegister(data) {
-    return (this.REGISTER = data);
+    this.REGISTER = data;
+    return this.REGISTER;
   }
-    
+
   setUpdateAccount(data) {
     return (this.UPDATE_ACCOUNT = data);
   }
@@ -57,6 +72,13 @@ class User {
 
   ///GETTERS
 
+  async fetchLogin(info) {
+    const response = await axios.post("api/auth/login", info),
+      data = response.data;
+
+    return await this.setLogin(data);
+  }
+
   async fetchRegister(info) {
     const response = await axios.post("api/auth/register", info);
 
@@ -64,10 +86,10 @@ class User {
   }
 
   async fetchAccount(info) {
-    const response = await axios.get("api/user/account", {
-      params: info
-    });
-
+ const response = await axios.get("api/user/account", {
+        params: info
+      });
+      
     return this.setAccount(response.data);
   }
 
@@ -122,6 +144,45 @@ class User {
   }
 }
 
-decorate(User, {});
+decorate(User, {
+  //STATES
+  ACCOUNT: observable,
+  REGISTER: observable,
+  UPDATE_ACCOUNT: observable,
+  UPDATE_PASSWORD: observable,
+  UPDATE_BILLING_ADDRESS: observable,
+  ORDERS_HISTORY: observable,
+  SELF_DASHBOARD: observable,
+  SELF_TOKEN: observable,
+  ACCESS_TOKEN: observable,
+  PASSWORD_RESET_REQUEST: observable,
+  PASSWORD_RESET: observable,
+
+  //SETTERS
+  setAccount: action,
+  setRegister: action,
+  setUpdateAccount: action,
+  setUpdatePassword: action,
+  setUpdateBillingAddress: action,
+  setOrdersHistory: action,
+  setSelfDashboard: action,
+  setSelfToken: action,
+  setAccessToken: action,
+  setPasswordResetRequest: action,
+  setPasswordReset: action,
+
+  ///GETTERS
+
+  fetchRegister: action,
+  fetchAccount: action,
+  fetchUpdateAccount: action,
+  fetchUpdatePassword: action,
+  fetchUpdateBillingAddress: action,
+  fetchOrdersHistory: action,
+  fetchSelfDashboard: action,
+  fetchSelfToken: action,
+  fetchPasswordResetRequest: action,
+  fetchPasswordReset: action
+});
 
 export default new User();

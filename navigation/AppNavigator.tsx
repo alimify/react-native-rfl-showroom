@@ -1,12 +1,13 @@
 import React from 'react'
 import {Platform} from 'react-native'
-import { createAppContainer } from 'react-navigation'
+import { createAppContainer,createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator,createMaterialTopTabNavigator } from 'react-navigation-tabs'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import {AntDesign,MaterialIcons} from '@expo/vector-icons'
 
+import StartUpScreen from '../screens/StartUpScreen'
 import HomeScreen from '../screens/HomeScreen'
 import CategoryScreen from '../screens/CategoryScreen'
 import CategoryProductScreen from '../screens/CategoryProductScreen'
@@ -14,8 +15,8 @@ import ProductScreen from '../screens/ProductScreen'
 import CartScreen from '../screens/CartScreen'
 import SearchScreen from '../screens/SearchScreen'
 import UserIndex from '../screens/user/index'
-
-
+import LoginScreen from '../screens/auth/Login'
+import RegisterScreen from '../screens/auth/Register'
 import ReviewScreen from '../screens/product/ReviewScreen'
 
 const navigationOptions = {
@@ -39,7 +40,9 @@ const MainNavigator = createStackNavigator({
     Product: ProductScreen,
     Cart: CartScreen,
     Search: SearchScreen,
-    Reviews: ReviewScreen
+    Reviews: ReviewScreen,
+    Login: LoginScreen,
+    Register: RegisterScreen
 
 })
 
@@ -110,6 +113,12 @@ const DrawerNavigator = createDrawerNavigator({
 })
 
 
+const combineNavigator = createSwitchNavigator({
+    Start: StartUpScreen,
+    Drawer: DrawerNavigator
+})
 
 
-export default createAppContainer(DrawerNavigator)
+
+
+export default createAppContainer(combineNavigator);

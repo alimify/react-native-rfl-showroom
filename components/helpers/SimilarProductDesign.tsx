@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { withNavigation } from 'react-navigation'
 import { inject, observer } from "mobx-react";
 
@@ -30,7 +30,7 @@ const Product = props => {
             }}
         >
             <View style={styles.productContainer}>
-                <Image source={{ uri: 'https://rflbestbuy.com/secure/' + props.product.image.full_size_directory }} style={{ width: 100, height: 100 }} />
+                <Image source={{ uri: 'https://rflbestbuy.com/secure/' + props.product.image?props.product.image.full_size_directory:'' }} style={{ width: 100, height: 100 }} />
                 <PriceText product={props.product} />
             </View>
         </TouchableOpacity>

@@ -13,17 +13,34 @@ import SimilarProduct from '../components/product/SimilarProduct'
 
 const ProductScreen =   (props) => {
   const product = props.navigation.getParam('product'),
-    { shop } = props.store
+    { shop, user } = props.store,
+    [getLoading,setLoading] = useState(false)
 
   
   useEffect(() => {
 
-    shop.fetchProductDetails({
-      slug: product.seo_url
-    })
+
+    const ProductLoading = async (shop, product) => {
+      setLoading(true)
+     const loadingProduct = await shop.fetchProductDetails({
+        slug: product.seo_url
+     })
+      setLoading(false)
+    }
+
+    ProductLoading(shop,product)
 
 
-   },[shop,product])
+  }, [shop, product])
+  
+
+  if (getLoading) {
+    return (<View>
+      <Text>
+        Loading...
+      </Text>
+    </View>)
+  }
   
     return (
       <ScrollView>
@@ -75,5 +92,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   }
 })
+
+
+
+ProductScreen.navigationOptions = navData => {
+  return {
+    tabBarVisible: false
+  }
+ }
+
 
 export default inject("store")(observer(withNavigation(ProductScreen)))
