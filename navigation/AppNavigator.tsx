@@ -9,15 +9,11 @@ import {AntDesign,MaterialIcons} from '@expo/vector-icons'
 
 import StartUpScreen from '../screens/StartUpScreen'
 import HomeScreen from '../screens/HomeScreen'
-import CategoryScreen from '../screens/CategoryScreen'
-import CategoryProductScreen from '../screens/CategoryProductScreen'
-import ProductScreen from '../screens/ProductScreen'
-import CartScreen from '../screens/CartScreen'
-import SearchScreen from '../screens/SearchScreen'
+import OrderScreen from '../screens/OrderScreen'
+import OrderDetailScreen from '../screens/OrderDetailScreen'
 import UserIndex from '../screens/user/index'
 import LoginScreen from '../screens/auth/Login'
 import RegisterScreen from '../screens/auth/Register'
-import ReviewScreen from '../screens/product/ReviewScreen'
 
 const navigationOptions = {
 //   title: "RflbestbuyRFL",
@@ -35,47 +31,19 @@ const navigationOptions = {
 const MainNavigator = createStackNavigator({
 
     Home: HomeScreen,
-    Category: CategoryScreen,
-    CategoryProduct: CategoryProductScreen,
-    Product: ProductScreen,
-    Cart: CartScreen,
-    Search: SearchScreen,
-    Reviews: ReviewScreen,
-    Login: LoginScreen,
-    Register: RegisterScreen
-
+    Order: OrderScreen,
+    OrderDetail: OrderDetailScreen,
 })
 
 
 const tabScreenConfig = {
-  Home: {
-        screen: MainNavigator,
-        navigationOptions: {
-            tabBarIcon: (tabInfo) => {
-                return <AntDesign name="home" size={30} />;
+    Home: {
+            screen: MainNavigator,
+            navigationOptions: {
+                tabBarIcon: (tabInfo) => {
+                    return <AntDesign name="home" size={30} />;
+                }
             }
-        }
-  },
-  Category: {
-      screen: CategoryScreen,
-      navigationOptions: {
-          tabBarIcon: (tabInfo) => {
-              
-              return <MaterialIcons name="dashboard" size={30}/>
-          },
-          tabBarColor: 'white',
-          tabBarLabel: 'Category'
-      }
-    },
-  
-  Cart: {
-      screen: CartScreen,
-      navigationOptions: {
-          tabBarIcon: (tabInfo) => {
-              return <AntDesign name="shoppingcart" size={30}/>
-          },
-          tabBarColor: 'gray'
-      }
     },
     Account: {
         screen: UserIndex,
@@ -105,8 +73,8 @@ const AppNavigator = Platform.OS == 'android' ? createMaterialBottomTabNavigator
 
 const DrawerNavigator = createDrawerNavigator({
     Home: AppNavigator,
-    Category: {
-        screen: CategoryScreen
+    Order: {
+        screen: OrderScreen
     }
 }, {
     defaultNavigationOptions: navigationOptions
@@ -115,7 +83,9 @@ const DrawerNavigator = createDrawerNavigator({
 
 const combineNavigator = createSwitchNavigator({
     Start: StartUpScreen,
-    Drawer: DrawerNavigator
+    Drawer: DrawerNavigator,
+    Login: LoginScreen,
+    Register: RegisterScreen
 })
 
 

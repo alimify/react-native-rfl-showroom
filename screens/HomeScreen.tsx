@@ -1,163 +1,157 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
-
+import Spinner from "../components/helpers/Spinner";
+import DefaultStyles from "../constants/DefaultStyles";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ScrollView
+  Text,
+  ScrollView,
+  StatusBar
 } from "react-native";
 
-import { Ionicons } from '@expo/vector-icons'
-import { HeaderButtons, HeaderButton, Item } from "react-navigation-header-buttons";
-import Sliders from "../components/home/SliderBox";
-import FlashSale from "../components/home/FlashSale";
-import NewArrivals from "../components/home/NewArrivals";
-import JustForYou from '../components/home/JustForYou'
-import ProductSet from '../components/home/ProductSet'
+import { Ionicons } from "@expo/vector-icons";
+import {
+  HeaderButtons,
+  HeaderButton,
+  Item
+} from "react-navigation-header-buttons";
 
-import NavigationService from '../navigation/NavigationService'
+import NavigationService from "../navigation/NavigationService";
 
-
-const HomeScreen = (props) => {
-
-
-  const { home } = props.store;
+const HomeScreen = props => {
+  const { showroom, user } = props.store,
+    [getLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    home.fetchIndex();
-  }, [home])
+    const loadData = async () => {
+      try {
+        await showroom.fetchDashboard();
+        await user.fetchAccount();
+      } catch {
+      } finally {
+        await setLoading(false);
+      }
+    };
 
+    loadData();
+  }, [showroom, setLoading]);
 
-  const CategoryOneProducts = home.INDEX
-    ? home.INDEX.category_one.category_products.map(item => item.product)
-    : false,
-    CategoryTwoProducts = home.INDEX
-      ? home.INDEX.category_two.category_products.map(item => item.product)
-      : false,
-    CategoryThreeProducts = home.INDEX
-      ? home.INDEX.category_three.category_products.map(item => item.product)
-      : false;
+  if (!getLoading && !user.ACCOUNT) {
+    props.navigation.navigate("Login");
+  }
+
+  if (getLoading) {
+    return <Spinner />;
+  }
 
   return (
-      <ScrollView>
-        <View>
-          <View>
-            <Sliders
-              sliders={
-                home.INDEX
-                  ? home.INDEX.mobilesliders
-                  : false
-              }
-            />
+    <ScrollView>
+      <View>
+        <View style={styles.flexItemContainer}>
+          <View style={{ ...styles.box, ...{ backgroundColor: "#dd4b39" } }}>
+            <Text
+              style={{
+                ...styles.fontWhite,
+                ...DefaultStyles.openSansBold,
+                ...styles.numberFont,
+                color: "#dd4b39"
+              }}
+            >
+              {showroom.DASHBOARD ? showroom.DASHBOARD.new : 0}
+            </Text>
+            <Text
+              style={{ ...styles.fontWhite, ...DefaultStyles.openSansBold }}
+            >
+              New
+            </Text>
           </View>
-          <View>
-            <FlashSale
-              flashSales={
-                home.INDEX
-                  ? home.INDEX.flash_sales
-                  : false
-              }
-            />
-          </View>
-          <View>
-            <NewArrivals
-              products={
-                home.INDEX
-                  ? home.INDEX.new_arrivals
-                  : false
-              }
-            />
-          </View>
-          <View>
-            <JustForYou
-              products={
-                home.INDEX
-                  ? home.INDEX.justForYou
-                  : false
-              }
-            />
-          </View>
-          <View>
-            <ProductSet
-              products={
-                home.INDEX
-                  ? home.INDEX.bestbuy_choices
-                  : false
-              }
-              title="Recommended"
-            />
-          </View>
-          <View>
-            <ProductSet
-              title={
-                home.INDEX
-                  ? home.INDEX.category_one.name
-                  : ""
-              }
-              products={CategoryOneProducts}
-            />
-          </View>
-          <View>
-            <ProductSet
-              title={
-                home.INDEX
-                  ? home.INDEX.category_two.name
-                  : ""
-              }
-              products={CategoryTwoProducts}
-            />
-          </View>
-          <View>
-            <ProductSet
-              title={
-                home.INDEX
-                  ? home.INDEX.category_three.name
-                  : ""
-              }
-              products={CategoryThreeProducts}
-            />
+          <View style={{ ...styles.box, ...{ backgroundColor: "#f39c12" } }}>
+            <Text
+              style={{
+                ...styles.fontWhite,
+                ...DefaultStyles.openSansBold,
+                ...styles.numberFont,
+                color: "#f39c12"
+              }}
+            >
+              {showroom.DASHBOARD ? showroom.DASHBOARD.processing : 0}
+            </Text>
+            <Text
+              style={{ ...styles.fontWhite, ...DefaultStyles.openSansBold }}
+            >
+              Processing
+            </Text>
           </View>
         </View>
-      </ScrollView>
+
+        <View style={styles.flexItemContainer}>
+          <View style={{ ...styles.box, ...{ backgroundColor: "#00a65a" } }}>
+            <Text
+              style={{
+                ...styles.fontWhite,
+                ...DefaultStyles.openSansBold,
+                ...styles.numberFont,
+                color: "#00a65a"
+              }}
+            >
+              {showroom.DASHBOARD ? showroom.DASHBOARD.completed : 0}
+            </Text>
+            <Text
+              style={{ ...styles.fontWhite, ...DefaultStyles.openSansBold }}
+            >
+              Completed
+            </Text>
+          </View>
+          <View style={{ ...styles.box, ...{ backgroundColor: "#00c0ef" } }}>
+            <Text
+              style={{
+                ...styles.fontWhite,
+                ...DefaultStyles.openSansBold,
+                ...styles.numberFont,
+                color: "#00c0ef"
+              }}
+            >
+              {showroom.DASHBOARD ? showroom.DASHBOARD.total : 0}
+            </Text>
+            <Text
+              style={{ ...styles.fontWhite, ...DefaultStyles.openSansBold }}
+            >
+              Total
+            </Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 
 
-
-const HeaderSearchInput = props => {
-
-  return (
-    <TouchableOpacity style={{ borderRadius: 20, marginLeft: -25, backgroundColor: '#f7f6f2' }} activeOpacity={1} onPress={() => {
-      NavigationService.navigate('Search', {})
-    }}>
-      <View pointerEvents="none" style={{ flexDirection: 'row', width: 300, marginLeft: 5, marginTop: 3 }}>
-        <Ionicons style={{ color: '#b4b5b3' }} name="ios-search" size={32} />
-      </View>
-    </TouchableOpacity>
-  )
-}
-
-
 const HeaderButtonComponent = props => {
   return (
-    <HeaderButton {...props} IconComponent={Ionicons} iconSize={23} color="gray" />
-  )
-}
-
-
+    <HeaderButton
+      {...props}
+      IconComponent={Ionicons}
+      iconSize={32}
+      color="black"
+    />
+  );
+};
 
 HomeScreen.navigationOptions = navData => {
   return {
-    headerTitle: () => <HeaderSearchInput />,
+    headerTitle: () => (
+      <Text style={DefaultStyles.headerTitle}>Dashboard</Text>
+    ),
     headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButtonComponent}>
         <Item
           title="Menu"
           iconName="ios-menu"
           onPress={() => {
-            navData.navigation.toggleDrawer()
+            navData.navigation.toggleDrawer();
           }}
         />
       </HeaderButtons>
@@ -166,8 +160,34 @@ HomeScreen.navigationOptions = navData => {
 };
 
 const styles = StyleSheet.create({
-
+  box: {
+    padding: 30,
+    margin: 5,
+    alignContent: "space-between",
+    width: "47.4%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 4
+  },
+  flexItemContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center"
+  },
+  fontWhite: {
+    color: "white",
+    fontSize: 20
+  },
+  numberFont: {
+    borderRadius: 50,
+    backgroundColor: "white",
+    height: 45,
+    textAlign: "center",
+    width: 45,
+    lineHeight: 45,
+    marginBottom: 4
+  }
 });
 
 export default inject("store")(observer(HomeScreen));
-
