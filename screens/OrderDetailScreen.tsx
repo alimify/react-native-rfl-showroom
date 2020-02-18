@@ -168,7 +168,7 @@ const HomeScreen = (props) => {
                                     })
                                     await setLoading(false)
                                 }}>
-                                    <Text style={{ color: 'white' }}>Proccessing</Text>
+                                    <Text style={styles.btnFontStyle}>Proccessing</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -181,7 +181,7 @@ const HomeScreen = (props) => {
                                     })
                                     await setLoading(false)
                                 }}>
-                                    <Text style={{ color: 'white' }}>Complete</Text>
+                                    <Text style={styles.btnFontStyle}>Complete</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -362,6 +362,28 @@ const styles = StyleSheet.create({
     odd: {
         padding: 5,
         backgroundColor: '#ddd'
+    },
+    textBold: {
+        fontWeight: "bold",
+        fontSize: 18,
+        color: '#555555'        
+    },
+    btnFontStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingVertical: 5,
+        fontSize: 17
+    },
+    textBox: {
+        color: '#404040',
+        fontWeight: 'bold',
+        paddingVertical: 5,
+        fontSize: 17
+    },
+    textBoxRight: {
+        color: '#000000',
+        fontSize: 17
     }
 });
 

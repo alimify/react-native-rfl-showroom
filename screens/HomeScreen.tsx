@@ -49,8 +49,8 @@ const HomeScreen = props => {
   return (
     <ScrollView>
       <View>
-        <View style={styles.flexItemContainer}>
-          <View style={{ ...styles.box, ...{ backgroundColor: "#dd4b39" } }}>
+        <View style={DefaultStyles.flexContainer}>
+          <View style={{...DefaultStyles.w45,...styles.box ,...{ backgroundColor: "#dd4b39" } }}>
             <Text
               style={{
                 ...styles.fontWhite,
@@ -67,7 +67,7 @@ const HomeScreen = props => {
               New
             </Text>
           </View>
-          <View style={{ ...styles.box, ...{ backgroundColor: "#f39c12" } }}>
+          <View style={{ ...DefaultStyles.w45,...styles.box ,...{ backgroundColor: "#f39c12" } }}>
             <Text
               style={{
                 ...styles.fontWhite,
@@ -86,8 +86,8 @@ const HomeScreen = props => {
           </View>
         </View>
 
-        <View style={styles.flexItemContainer}>
-          <View style={{ ...styles.box, ...{ backgroundColor: "#00a65a" } }}>
+        <View style={DefaultStyles.flexContainer}>
+          <View style={{...DefaultStyles.w45,...styles.box ,...{ backgroundColor: "#00a65a" } }}>
             <Text
               style={{
                 ...styles.fontWhite,
@@ -104,7 +104,7 @@ const HomeScreen = props => {
               Completed
             </Text>
           </View>
-          <View style={{ ...styles.box, ...{ backgroundColor: "#00c0ef" } }}>
+          <View style={{...DefaultStyles.w45,...styles.box , ...{ backgroundColor: "#00c0ef" } }}>
             <Text
               style={{
                 ...styles.fontWhite,
@@ -163,9 +163,9 @@ const styles = StyleSheet.create({
   box: {
     padding: 30,
     margin: 5,
-    alignContent: "space-between",
-    width: "47.4%",
-    justifyContent: "space-between",
+    // alignContent: "space-between",
+    width: "47%",
+    // justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 4
   },
